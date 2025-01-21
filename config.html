@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a1a1a">
+  <title>Gracias - Video Downloader App</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    .email-list-container {
+      background-color: var(--primary-color);
+      border-radius: 12px;
+      overflow: hidden;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+    }
+    .email-list-scroll {
+      flex-grow: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-color) var(--primary-color);
+    }
+    .email-list-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+    .email-list-scroll::-webkit-scrollbar-track {
+      background: var(--primary-color);
+    }
+    .email-list-scroll::-webkit-scrollbar-thumb {
+      background-color: var(--accent-color);
+      border-radius: 4px;
+    }
+    .email-list-controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px;
+      background-color: var(--accent-color);
+    }
+    .scroll-btn {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .email-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--accent-color);
+    }
+    .email-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .email-action-btn {
+      background: none;
+      border: 1px solid;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+    .email-action-btn.update {
+      border-color: #2196F3;
+      color: #2196F3;
+    }
+    .email-action-btn.start {
+      border-color: #4CAF50;
+      color: #4CAF50;
+    }
+    .email-action-btn.cancel {
+      border-color: #f44336;
+      color: #f44336;
+    }
+    .email-action-btn:hover {
+      opacity: 0.7;
+    }
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .spinner {
+      width: 3em;
+      height: 3em;
+      cursor: not-allowed;
+      border-radius: 50%;
+      border: 2px solid #444;
+      box-shadow: -10px -10px 10px #6359f8, 0px -10px 10px 0px #9c32e2, 10px -10px 10px #f36896, 10px 0 10px #ff0b0b, 10px 10px 10px 0px#ff5500, 0 10px 10px 0px #ff9500, -10px 10px 10px 0px #ffb700;
+      animation: rot55 0.7s linear infinite;
+      position: relative;
+    }
+
+    .spinnerin {
+      border: 2px solid #444;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes rot55 {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner">
+      <div class="spinnerin"></div>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <button class="back-button" onclick="window.location.href='index.html'">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" fill="currentColor"/>
+      </svg>
+      Volver
+    </button>
+    
+    <div class="email-list-container">
+      <div id="email-list" class="email-list-scroll">
+        <div class="email-item">
+          ofy001@gmail.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy002@outlook.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy003@icloud.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy004@yahoo.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy005@hotmail.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy006@proton.me - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy007@zoho.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+        <div class="email-item">
+          ofy008@mail.com - Activo
+          <div class="email-actions">
+            <button class="email-action-btn update">Actualizar</button>
+            <button class="email-action-btn start">Iniciar</button>
+            <button class="email-action-btn cancel">Cancelar</button>
+          </div>
+        </div>
+      </div>
+      <div class="email-list-controls">
+        <button class="scroll-btn" id="scrollUpBtn">
+          ↑ Subir
+        </button>
+        <button class="scroll-btn" id="scrollDownBtn">
+          ↓ Bajar
+        </button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loader = document.querySelector('.loader');
+      
+      // Hide loader after 2 seconds
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 500);
+      }, 2000);
+
+      const body = document.body;
+      const savedTheme = localStorage.getItem('theme');
+      const emailList = document.getElementById('email-list');
+      const scrollUpBtn = document.getElementById('scrollUpBtn');
+      const scrollDownBtn = document.getElementById('scrollDownBtn');
+      
+      function applyTheme(isLightTheme) {
+        if (isLightTheme) {
+          body.classList.add('light-theme');
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f0f0f0');
+        } else {
+          body.classList.remove('light-theme');
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1a1a1a');
+        }
+      }
+
+      // Apply theme on page load
+      if (savedTheme === 'light') {
+        applyTheme(true);
+      }
+
+      // Listen for theme changes from other pages
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'theme') {
+          const isLightTheme = event.newValue === 'light';
+          applyTheme(isLightTheme);
+        }
+      });
+
+      // Scroll buttons functionality
+      scrollUpBtn.addEventListener('click', () => {
+        emailList.scrollBy({
+          top: -200,
+          behavior: 'smooth'
+        });
+      });
+
+      scrollDownBtn.addEventListener('click', () => {
+        emailList.scrollBy({
+          top: 200,
+          behavior: 'smooth'
+        });
+      });
+
+      // Email action button handlers
+      const emailActionBtns = document.querySelectorAll('.email-action-btn');
+      emailActionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const actionType = e.target.textContent;
+          const emailItem = e.target.closest('.email-item');
+          let emailAddress = emailItem.textContent.split(' - ')[0];
+          
+          switch(actionType) {
+            case 'Actualizar':
+              console.log(`Actualizando: ${emailAddress}`);
+              break;
+            case 'Iniciar':
+              console.log(`Iniciando: ${emailAddress}`);
+              break;
+            case 'Cancelar':
+              console.log(`Cancelando: ${emailAddress}`);
+              break;
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

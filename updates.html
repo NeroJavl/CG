@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a1a1a">
+  <title>Actualizaciones - Video Downloader App</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Previous styles remain the same */
+
+    .updates-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-auto-rows: auto;
+      gap: 15px;
+      max-height: 70vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-color) var(--bg-color);
+    }
+
+    .updates-gallery::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .updates-gallery::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+
+    .updates-gallery::-webkit-scrollbar-thumb {
+      background-color: var(--accent-color);
+      border-radius: 4px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-item:nth-child(3n+1) {
+      grid-row: span 2;
+    }
+
+    .gallery-item:nth-child(4n+2) {
+      grid-row: span 3;
+    }
+
+    .gallery-item-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.6);
+      overflow: hidden;
+      width: 100%;
+      height: 0;
+      transition: 0.5s ease;
+    }
+
+    .gallery-item:hover .gallery-item-overlay {
+      height: 50px;
+    }
+
+    .gallery-item-text {
+      color: white;
+      font-size: 14px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .gallery-item:hover .gallery-item-text {
+      opacity: 1;
+    }
+
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .spinner {
+      width: 3em;
+      height: 3em;
+      cursor: not-allowed;
+      border-radius: 50%;
+      border: 2px solid #444;
+      box-shadow: -10px -10px 10px #6359f8, 0px -10px 10px 0px #9c32e2, 10px -10px 10px #f36896, 10px 0 10px #ff0b0b, 10px 10px 10px 0px#ff5500, 0 10px 10px 0px #ff9500, -10px 10px 10px 0px #ffb700;
+      animation: rot55 0.7s linear infinite;
+      position: relative;
+    }
+
+    .spinnerin {
+      border: 2px solid #444;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes rot55 {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* New button styles */
+    .updates-back-button-container .explore-button {
+      width: 110px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      background-color: rgb(245, 73, 144);
+      border-radius: 30px;
+      color: rgb(19, 19, 19);
+      font-weight: 600;
+      border: none;
+      position: relative;
+      cursor: pointer;
+      transition-duration: .2s;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.116);
+      padding-left: 8px;
+      transition-duration: .5s;
+    }
+
+    .updates-back-button-container .svgIcon {
+      height: 25px;
+      transition-duration: 1.5s;
+    }
+
+    .updates-back-button-container .explore-button:hover {
+      background-color: rgb(245, 73, 144);
+      transition-duration: .5s;
+    }
+
+    .updates-back-button-container .explore-button:active {
+      transform: scale(0.97);
+      transition-duration: .2s;
+    }
+
+    .updates-back-button-container .explore-button:hover .svgIcon {
+      transform: rotate(250deg);
+      transition-duration: 1.5s;
+    }
+
+    /* Button container styles */
+    .button-container {
+      display: flex;
+      background-color: rgba(245, 73, 144);
+      width: 90%; 
+      max-width: 400px; 
+      height: 50px; 
+      align-items: center;
+      justify-content: space-around;
+      border-radius: 15px; 
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px,
+            rgba(245, 73, 144, 0.5) 5px 10px 15px;
+      margin: 20px auto; 
+      padding: 0 10px; 
+    }
+
+    .button-container .button {
+      outline: 0 !important;
+      border: 0 !important;
+      width: 45px; 
+      height: 45px; 
+      border-radius: 50%;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: all ease-in-out 0.3s;
+      cursor: pointer;
+    }
+
+    .button-container .button:hover {
+      transform: translateY(-3px);
+    }
+
+    .button-container .icon {
+      font-size: 22px; 
+    }
+
+    @media (max-width: 400px) {
+      .button-container {
+        width: 95%; 
+        height: 45px;
+      }
+
+      .button-container .button {
+        width: 40px;
+        height: 40px;
+      }
+
+      .button-container .icon {
+        font-size: 20px;
+      }
+    }
+
+    /* Disable button functionality */
+    .disable-interaction {
+      pointer-events: none;
+      cursor: default !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner">
+      <div class="spinnerin"></div>
+    </div>
+  </div>
+
+  <div class="app-container">
+    <!-- Centered Explore Back Button -->
+    <div class="updates-back-button-container">
+      <button class="explore-button disable-interaction" onclick="return false;">
+        <svg class="svgIcon" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+          <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"></path>
+        </svg>
+        Explore
+      </button>
+    </div>
+    
+    <div class="updates-gallery">
+    </div>
+
+    <div class="button-container">
+      <button class="button" onclick="window.location.href='index.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 1024 1024" stroke-width="0" fill="currentColor" stroke="currentColor" class="icon">
+          <path d="M946.5 505L560.1 118.8l-25.9-25.9a31.5 31.5 0 0 0-44.4 0L77.5 505a63.9 63.9 0 0 0-18.8 46c.4 35.2 29.7 63.3 64.9 63.3h42.5V940h691.8V614.3h43.4c17.1 0 33.2-6.7 45.3-18.8a63.6 63.6 0 0 0 18.7-45.3c0-17-6.7-33.1-18.8-45.2zM568 868H456V664h112v204zm217.9-325.7V868H632V640c0-22.1-17.9-40-40-40H432c-22.1 0-40 17.9-40 40v228H238.1V542.3h-96l370-369.7 23.1 23.1L882 542.3h-96.1z"></path>
+        </svg>
+      </button>
+      <button class="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" aria-hidden="true" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" class="icon">
+          <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <button class="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="0" fill="currentColor" stroke="currentColor" class="icon">
+          <path d="M12 2.5a5.5 5.5 0 0 1 3.096 10.047 9.005 9.005 0 0 1 5.9 8.181.75.75 0 1 1-1.499.044 7.5 7.5 0 0 0-14.993 0 .75.75 0 0 1-1.5-.045 9.005 9.005 0 0 1 5.9-8.18A5.5 5.5 0 0 1 12 2.5ZM8 8a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z"></path>
+        </svg>
+      </button>
+      <button class="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" stroke-linejoin="round" stroke-linecap="round" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" class="icon">
+          <circle r="1" cy="21" cx="9"></circle>
+          <circle r="1" cy="21" cx="20"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loader = document.querySelector('.loader');
+      
+      // Hide loader after 2 seconds
+      setTimeout(() => {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 500);
+      }, 2000);
+
+      const body = document.body;
+      const savedTheme = localStorage.getItem('theme');
+      
+      function applyTheme(isLightTheme) {
+        if (isLightTheme) {
+          body.classList.add('light-theme');
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f0f0f0');
+        } else {
+          body.classList.remove('light-theme');
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1a1a1a');
+        }
+      }
+
+      // Apply theme on page load
+      if (savedTheme === 'light') {
+        applyTheme(true);
+      }
+
+      // Listen for theme changes from other pages
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'theme') {
+          const isLightTheme = event.newValue === 'light';
+          applyTheme(isLightTheme);
+        }
+      });
+
+      // Gallery images data
+      const galleryImages = [
+        { 
+          src: "/3176b728515b3268304f492efc975042.jpg", 
+          alt: "Decomposition Galaxy", 
+          text: "Cosmic Decay" 
+        },
+        { 
+          src: "/2969f15ac1e13e27fa3859be046b05d8.jpg", 
+          alt: "Sunset Beach Silhouette", 
+          text: "Beach Memories" 
+        },
+        { 
+          src: "/f6b720059973531e7e8c6812cb37f723.jpg", 
+          alt: "iPhone Lockscreen", 
+          text: "Digital Aesthetics" 
+        },
+        { 
+          src: "/dd16c9b8d891ed8be4350ae5bcb17d60.jpg", 
+          alt: "Curly Hair Mango Tree", 
+          text: "Nature Portrait" 
+        },
+        { 
+          src: "/5925971b389fe37706c825b29d10b21c.jpg", 
+          alt: "Person with Fluffy Toy", 
+          text: "Soft Moments" 
+        },
+        { 
+          src: "/8b6e62d630f1a8235f763f7aa8fb6e13.jpg", 
+          alt: "Crying Character", 
+          text: "Digital Emotion" 
+        },
+        { 
+          src: "/43bbdd5d9ab0f1cf6511634247c3f143.jpg", 
+          alt: "Intimate Portrait", 
+          text: "Private Moments" 
+        },
+        { 
+          src: "/9435a86dbfdf11472a5171fca4b3cd4b.jpg", 
+          alt: "Smartphone Apps Screen", 
+          text: "Digital Life" 
+        },
+        { 
+          src: "/c4d2ea9335febd534551b3f0ff0e229b.jpg", 
+          alt: "Woman Selfie Glasses", 
+          text: "Style Portrait" 
+        },
+        { 
+          src: "/a8240faad5ee05301edea0807652edf1.jpg", 
+          alt: "Woman Neck and Shoulders", 
+          text: "Black and White" 
+        },
+        { 
+          src: "/eeca60689407d258b584455cd23e5cb3.jpg", 
+          alt: "Inflatable Orca", 
+          text: "Art Installation" 
+        },
+        { 
+          src: "/32518c41cde52550b4f7ceb9178de460.jpg", 
+          alt: "Lonely Sky", 
+          text: "Emotional Landscape" 
+        }
+      ];
+
+      function shuffleGallery() {
+        const galleryContainer = document.querySelector('.updates-gallery');
+        
+        // Shuffle the images array
+        const shuffledImages = galleryImages.sort(() => 0.5 - Math.random());
+        
+        // Clear existing gallery items
+        galleryContainer.innerHTML = '';
+        
+        // Add shuffled images
+        shuffledImages.slice(0, 12).forEach((img, index) => {
+          const galleryItem = document.createElement('div');
+          galleryItem.classList.add('gallery-item');
+          
+          // Add specific row span for some items to maintain grid layout
+          if (index % 3 === 0) {
+            galleryItem.style.gridRow = 'span 2';
+          }
+          if (index % 4 === 1) {
+            galleryItem.style.gridRow = 'span 3';
+          }
+          
+          galleryItem.innerHTML = `
+            <img src="${img.src}" alt="${img.alt}">
+            <div class="gallery-item-overlay">
+              <div class="gallery-item-text">${img.text}</div>
+            </div>
+          `;
+          
+          galleryContainer.appendChild(galleryItem);
+        });
+      }
+
+      shuffleGallery();
+
+      // Remove all event listeners and functionality from the explore button
+      const exploreButton = document.querySelector('.explore-button');
+      if (exploreButton) {
+        // Remove any existing click event listeners
+        const newButton = exploreButton.cloneNode(true);
+        exploreButton.parentNode.replaceChild(newButton, exploreButton);
+      }
+    });
+  </script>
+</body>
+</html>
